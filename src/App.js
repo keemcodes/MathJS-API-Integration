@@ -14,12 +14,12 @@ import {
 function App() {
   return (
     <Container className="center">
-      <Row className="pt-5">
+      <Row>
         <Col>
           <Alert variant="primary">2 + 2</Alert>
         </Col>
       </Row>
-      <Row>
+      <Row className="pb-5">
         <Col>
           <Form>
             <Form.Group className="mb-3" controlId="formBasicEmail">
