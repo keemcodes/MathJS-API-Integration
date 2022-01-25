@@ -17,30 +17,26 @@ function App() {
       <Row>
         <Col>
           <Alert variant="primary text-center">
-            <Alert.Heading>
-
-            2 + 2
-            </Alert.Heading>
+            <Alert.Heading>2 + 2</Alert.Heading>
             <p>You currently have 34 points!</p>
-            </Alert>
+          </Alert>
         </Col>
       </Row>
       <Row className="pb-5">
         <Col>
-        <Card>
-
-          <Form className="p-3">
-            <Form.Group className="mb-3" controlId="answer">
-              <Form.Control size="lg" type="text" placeholder="Your answer" />
-              <Form.Text className="text-muted">
-                Please input your answer above
-              </Form.Text>
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Card>
+          <Card>
+            <Form className="p-3">
+              <Form.Group className="mb-3" controlId="answer">
+                <Form.Control size="lg" type="text" placeholder="Your answer" />
+                <Form.Text className="text-muted">
+                  Please input your answer above
+                </Form.Text>
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </Card>
         </Col>
       </Row>
     </Container>
