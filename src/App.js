@@ -13,7 +13,7 @@ import {
 
 function App() {
   return (
-    <Container>
+    <Container className="center">
       <Row className="pt-5">
         <Col>
           <Alert variant="primary">2 + 2</Alert>
