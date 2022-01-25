@@ -21,8 +21,10 @@ function App() {
       </Row>
       <Row className="pb-5">
         <Col>
-          <Form>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Card>
+
+          <Form className="p-3">
+            <Form.Group className="mb-3" controlId="answer">
               <Form.Control size="lg" type="text" placeholder="Your answer" />
               <Form.Text className="text-muted">
                 Please input your answer above
@@ -32,6 +34,7 @@ function App() {
               Submit
             </Button>
           </Form>
+        </Card>
         </Col>
       </Row>
     </Container>
