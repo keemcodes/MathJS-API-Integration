@@ -16,7 +16,13 @@ function App() {
     <Container className="center">
       <Row>
         <Col>
-          <Alert variant="primary">2 + 2</Alert>
+          <Alert variant="primary text-center">
+            <Alert.Heading>
+
+            2 + 2
+            </Alert.Heading>
+            <p>You currently have 34 points!</p>
+            </Alert>
         </Col>
       </Row>
       <Row className="pb-5">
