@@ -17,6 +17,8 @@ function App() {
   const time = 8;
   let correctAnswer;
   const [history, setHistory] = useState([]);
+  let correctSound = new Audio("/correct.mp3")
+  let incorrectSound = new Audio("/incorrect.mp3")
 
   const generateQuestion = useCallback(() => {
     const firstNumber = Math.floor(Math.random() * 9) + 1;
@@ -43,6 +45,7 @@ function App() {
 
   useEffect(() => {
     if (timeLeft === 0) {
+      new Audio("/incorrect.mp3").play()
       setQuestion(generateQuestion);
       setTimeLeft(time);
       setPoints((points) => points - 1);
@@ -90,9 +93,11 @@ function App() {
     console.log(answer, correctAnswer);
     if (answer === correctAnswer) {
       setCorrect(true);
+      correctSound.play()
       console.log("yes");
     } else {
       setCorrect(false);
+      incorrectSound.play()
       console.log("no");
     }
     setAnswer("");
@@ -109,7 +114,7 @@ function App() {
               {timeLeft != null ? " seconds remaining" : ""}
             </Badge>
           </h2>
-          <Alert variant={correct === true ? 'primary text' : `${correct != null ? 'danger' : 'primary'} text-center`}>
+          <Alert variant={correct === true ? 'primary text-center' : `${correct != null ? 'danger' : 'primary'} text-center`}>
             {correct != null ? (
               <Alert.Heading>
                 {correct === true ? "Correct!" : "Incorrect"}
