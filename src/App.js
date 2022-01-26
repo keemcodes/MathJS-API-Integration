@@ -14,28 +14,33 @@ import {
 } from "react-bootstrap";
 
 function App() {
-  const time = 15;
+  const time = 8;
   let correctAnswer;
+  const [history, setHistory] = useState([]);
+
   const generateQuestion = useCallback(() => {
     const firstNumber = Math.floor(Math.random() * 9) + 1;
     const secondNumber = Math.floor(Math.random() * 9) + 1;
     const randomOperation = Math.floor(Math.random() * 2) + 1;
+    let generatedQuestion;
     if (firstNumber >= secondNumber)
-      return `${firstNumber} ${operations(randomOperation)} ${secondNumber}`;
-    else return `${secondNumber} ${operations(randomOperation)} ${firstNumber}`;
-  }, []);
+      generatedQuestion = `${firstNumber} ${operations(randomOperation)} ${secondNumber}`;
+    else generatedQuestion = `${secondNumber} ${operations(randomOperation)} ${firstNumber}`;
+    setHistory([...history, generatedQuestion])
+    return generatedQuestion
+  }, [history]);
 
   const [timeLeft, setTimeLeft] = useState(time);
   const [question, setQuestion] = useState(generateQuestion);
   const [points, setPoints] = useState(0);
-  const [answer, setAnswer] = useState('')
+  const [answer, setAnswer] = useState("");
 
   useEffect(() => {
     if (timeLeft === 0) {
       setQuestion(generateQuestion);
       setTimeLeft(time);
-      setPoints((points) => points-1)
-      setAnswer('')
+      setPoints((points) => points - 1);
+      setAnswer("");
     }
     if (!timeLeft) return;
     const intervalId = setInterval(() => {
@@ -43,7 +48,8 @@ function App() {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [timeLeft, question, generateQuestion, points]);
+  }, [timeLeft, question, generateQuestion, points, history]);
+
 
   function operations(operation) {
     switch (operation) {
@@ -59,25 +65,25 @@ function App() {
   }
 
   async function getAnswer() {
-    await fetch('http://api.mathjs.org/v4/', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ "expr": [question]})
+    await fetch("http://api.mathjs.org/v4/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ expr: [question] }),
     })
-    .then(res => res.json())
-    .then(res => correctAnswer = res.result[0])
+      .then((res) => res.json())
+      .then((res) => (correctAnswer = res.result[0]));
   }
 
   function handleAnswerChange(e) {
-      setAnswer(e.target.value);
+    setAnswer(e.target.value);
   }
 
   async function handleAnswerSubmit(e) {
-    e.preventDefault()
-    await getAnswer()
-    console.log(answer, correctAnswer)
-    answer === correctAnswer ? console.log('yes') : console.log('no')
-    setAnswer('')
+    e.preventDefault();
+    await getAnswer();
+    console.log(answer, correctAnswer);
+    answer === correctAnswer ? console.log("yes") : console.log("no");
+    setAnswer("");
     setQuestion(generateQuestion);
     setTimeLeft(time);
   }
@@ -102,7 +108,13 @@ function App() {
           <Card>
             <Form className="p-3">
               <Form.Group className="mb-3" controlId="answer">
-                <Form.Control size="lg" type="text" placeholder="Your answer" value={answer} onChange={handleAnswerChange}/>
+                <Form.Control
+                  size="lg"
+                  type="text"
+                  placeholder="Your answer"
+                  value={answer}
+                  onChange={handleAnswerChange}
+                />
                 <Form.Text className="text-muted">
                   Please input your answer above
                 </Form.Text>
