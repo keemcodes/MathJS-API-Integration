@@ -14,8 +14,8 @@ import {
 } from "react-bootstrap";
 
 function App() {
-  const time = 5;
-
+  const time = 15;
+  let correctAnswer;
   const generateQuestion = useCallback(() => {
     const firstNumber = Math.floor(Math.random() * 9) + 1;
     const secondNumber = Math.floor(Math.random() * 9) + 1;
@@ -28,12 +28,14 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(time);
   const [question, setQuestion] = useState(generateQuestion);
   const [points, setPoints] = useState(0);
+  const [answer, setAnswer] = useState('')
 
   useEffect(() => {
     if (timeLeft === 0) {
       setQuestion(generateQuestion);
       setTimeLeft(time);
       setPoints((points) => points-1)
+      setAnswer('')
     }
     if (!timeLeft) return;
     const intervalId = setInterval(() => {
@@ -54,6 +56,30 @@ function App() {
       case 2:
         return "*";
     }
+  }
+
+  async function getAnswer() {
+    await fetch('http://api.mathjs.org/v4/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ "expr": [question]})
+    })
+    .then(res => res.json())
+    .then(res => correctAnswer = res.result[0])
+  }
+
+  function handleAnswerChange(e) {
+      setAnswer(e.target.value);
+  }
+
+  async function handleAnswerSubmit(e) {
+    e.preventDefault()
+    await getAnswer()
+    console.log(answer, correctAnswer)
+    answer === correctAnswer ? console.log('yes') : console.log('no')
+    setAnswer('')
+    setQuestion(generateQuestion);
+    setTimeLeft(time);
   }
   return (
     <Container className="center">
@@ -76,7 +102,7 @@ function App() {
           <Card>
             <Form className="p-3">
               <Form.Group className="mb-3" controlId="answer">
-                <Form.Control size="lg" type="text" placeholder="Your answer" />
+                <Form.Control size="lg" type="text" placeholder="Your answer" value={answer} onChange={handleAnswerChange}/>
                 <Form.Text className="text-muted">
                   Please input your answer above
                 </Form.Text>
@@ -84,12 +110,7 @@ function App() {
               <Button
                 variant="primary"
                 type="submit"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setTimeLeft(time);
-                  setQuestion(generateQuestion)
-                  setPoints(points => points+10)
-                }}
+                onClick={handleAnswerSubmit}
               >
                 Submit
               </Button>
