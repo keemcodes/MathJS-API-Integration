@@ -24,22 +24,29 @@ function App() {
     const randomOperation = Math.floor(Math.random() * 2) + 1;
     let generatedQuestion;
     if (firstNumber >= secondNumber)
-      generatedQuestion = `${firstNumber} ${operations(randomOperation)} ${secondNumber}`;
-    else generatedQuestion = `${secondNumber} ${operations(randomOperation)} ${firstNumber}`;
-    setHistory([...history, generatedQuestion])
-    return generatedQuestion
+      generatedQuestion = `${firstNumber} ${operations(
+        randomOperation
+      )} ${secondNumber}`;
+    else
+      generatedQuestion = `${secondNumber} ${operations(
+        randomOperation
+      )} ${firstNumber}`;
+    setHistory([...history, generatedQuestion]);
+    return generatedQuestion;
   }, [history]);
 
   const [timeLeft, setTimeLeft] = useState(time);
   const [question, setQuestion] = useState(generateQuestion);
   const [points, setPoints] = useState(0);
   const [answer, setAnswer] = useState("");
+  const [correct, setCorrect] = useState();
 
   useEffect(() => {
     if (timeLeft === 0) {
       setQuestion(generateQuestion);
       setTimeLeft(time);
       setPoints((points) => points - 1);
+      setCorrect(false);
       setAnswer("");
     }
     if (!timeLeft) return;
@@ -49,7 +56,6 @@ function App() {
 
     return () => clearInterval(intervalId);
   }, [timeLeft, question, generateQuestion, points, history]);
-
 
   function operations(operation) {
     switch (operation) {
@@ -82,7 +88,13 @@ function App() {
     e.preventDefault();
     await getAnswer();
     console.log(answer, correctAnswer);
-    answer === correctAnswer ? console.log("yes") : console.log("no");
+    if (answer === correctAnswer) {
+      setCorrect(true);
+      console.log("yes");
+    } else {
+      setCorrect(false);
+      console.log("no");
+    }
     setAnswer("");
     setQuestion(generateQuestion);
     setTimeLeft(time);
@@ -97,7 +109,14 @@ function App() {
               {timeLeft != null ? " seconds remaining" : ""}
             </Badge>
           </h2>
-          <Alert variant="primary text-center">
+          <Alert variant={correct === true ? 'primary text' : `${correct != null ? 'danger' : 'primary'} text-center`}>
+            {correct != null ? (
+              <Alert.Heading>
+                {correct === true ? "Correct!" : "Incorrect"}
+              </Alert.Heading>
+            ) : (
+              ""
+            )}
             <Alert.Heading>{question}</Alert.Heading>
             <p>You currently have {points} points!</p>
           </Alert>
