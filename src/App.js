@@ -16,11 +16,12 @@ import {
 } from "react-bootstrap";
 
 function App() {
+  const url = "https://api.mathjs.org/v4/";
   const time = 8;
   let correctAnswer;
   const [history, setHistory] = useState([]);
-  let correctSound = new Audio("/correct.mp3");
-  let incorrectSound = new Audio("/incorrect.mp3");
+  let correctSound = new Audio("correct.mp3");
+  let incorrectSound = new Audio("incorrect.mp3");
   correctSound.volume = 0.15;
   incorrectSound.volume = 0.15;
 
@@ -49,7 +50,7 @@ function App() {
 
   useEffect(() => {
     if (timeLeft === 0) {
-      let negativeFeedbackSound = new Audio("/incorrect.mp3");
+      let negativeFeedbackSound = new Audio("incorrect.mp3");
       negativeFeedbackSound.volume = 0.15;
       negativeFeedbackSound.play();
       setQuestion(generateQuestion);
@@ -80,7 +81,7 @@ function App() {
   }
 
   async function getAnswer() {
-    await fetch("http://api.mathjs.org/v4/", {
+    await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ expr: [question] }),
@@ -100,7 +101,9 @@ function App() {
     if (answer === correctAnswer) {
       setCorrect(true);
       correctSound.play();
-      timeLeft >= 4 ? setPoints((points) => points + 7) : setPoints((points) => points + 5)
+      timeLeft >= 4
+        ? setPoints((points) => points + 7)
+        : setPoints((points) => points + 5);
       console.log("yes");
     } else {
       setCorrect(false);
@@ -169,31 +172,28 @@ function App() {
         </Col>
       </Row>
       <Row>
-        <Accordion defaultActiveKey="0">
+        <Accordion>
           <Accordion.Item eventKey="0">
             <Accordion.Header>How to play</Accordion.Header>
             <Accordion.Body>
               <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    You have 8 seconds per question
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    Answering within 4 seconds will grant you 7 points.
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    Anything after the first 4 seonds will grant you 5 points.
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    If you don't answer within the time limit you will lose 5 points.
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    If your answer is wrong, you will lose 4 points.
-                  </ListGroup.Item>
+                <ListGroup.Item>You have 8 seconds per question</ListGroup.Item>
+                <ListGroup.Item>
+                  Answering within 4 seconds will grant you 7 points.
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Anything after the first 4 seonds will grant you 5 points.
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  If you don't answer within the time limit you will lose 5
+                  points.
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  If your answer is wrong, you will lose 4 points.
+                </ListGroup.Item>
               </ListGroup>
             </Accordion.Body>
           </Accordion.Item>
-        </Accordion>
-        <Accordion defaultActiveKey="1">
           <Accordion.Item eventKey="1">
             <Accordion.Header>Question History</Accordion.Header>
             <Accordion.Body>
