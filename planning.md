@@ -29,6 +29,16 @@ Implementation details and application functionality is described in more detail
   * points (int)
   * history (array of strings)
 
+### High Level Code Implementation
+* When user visits page a timer will begin
+* A random question will be generated via a custom random function
+  * Function will use math.random to generate two numbers and an operation
+  * The generated problem will be stored to state and added to the user's sessionStorage object for historical tracking
+* Once the user enters their answer and hit submit, the user's input will be sent to mathjs API via a post request.
+* The results of the post request will be used to check if the user has the right answer
+  * If the answer is correct, we will add points to the user's state and maybe sessionStorage for historical tracking
+  * If the answer is incorrect, we will deduct points
+
 ### UI Implementation
 * UI will be created using React Bootstrap for ease of implementation.
   * UI will consist of prompt alert box with a random math question
