@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
@@ -14,11 +14,26 @@ import {
 } from "react-bootstrap";
 
 function App() {
-  const [timeLeft, setTimeLeft] = useState(30);
+  const time = 5;
+
+  const generateQuestion = useCallback(() => {
+    const firstNumber = Math.floor(Math.random() * 9) + 1;
+    const secondNumber = Math.floor(Math.random() * 9) + 1;
+    const randomOperation = Math.floor(Math.random() * 2) + 1;
+    if (firstNumber >= secondNumber)
+      return `${firstNumber} ${operations(randomOperation)} ${secondNumber}`;
+    else return `${secondNumber} ${operations(randomOperation)} ${firstNumber}`;
+  }, []);
+
+  const [timeLeft, setTimeLeft] = useState(time);
   const [question, setQuestion] = useState(generateQuestion);
+  const [points, setPoints] = useState(0);
+
   useEffect(() => {
     if (timeLeft === 0) {
-      setTimeLeft(null);
+      setQuestion(generateQuestion);
+      setTimeLeft(time);
+      setPoints((points) => points-1)
     }
     if (!timeLeft) return;
     const intervalId = setInterval(() => {
@@ -26,10 +41,8 @@ function App() {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [timeLeft]);
-  // function getSolution() {
-  //   fetch()
-  // }
+  }, [timeLeft, question, generateQuestion, points]);
+
   function operations(operation) {
     switch (operation) {
       default:
@@ -40,16 +53,7 @@ function App() {
         return "-";
       case 2:
         return "*";
-      // case 3: return '/'
     }
-  }
-  function generateQuestion() {
-    const firstNumber = Math.floor(Math.random() * 9) + 1;
-    const secondNumber = Math.floor(Math.random() * 9) + 1;
-    const randomOperation = Math.floor(Math.random() * 2) + 1;
-    if (firstNumber >= secondNumber)
-      return(`${firstNumber} ${operations(randomOperation)} ${secondNumber}`);
-    else return(`${secondNumber} ${operations(randomOperation)} ${firstNumber}`);
   }
   return (
     <Container className="center">
@@ -63,7 +67,7 @@ function App() {
           </h2>
           <Alert variant="primary text-center">
             <Alert.Heading>{question}</Alert.Heading>
-            <p>You currently have 34 points!</p>
+            <p>You currently have {points} points!</p>
           </Alert>
         </Col>
       </Row>
@@ -82,8 +86,9 @@ function App() {
                 type="submit"
                 onClick={(e) => {
                   e.preventDefault();
-                  setTimeLeft(30)
-                  // setQuestion(generateQuestion)
+                  setTimeLeft(time);
+                  setQuestion(generateQuestion)
+                  setPoints(points => points+10)
                 }}
               >
                 Submit
