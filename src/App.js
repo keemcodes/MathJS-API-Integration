@@ -11,14 +11,18 @@ import {
   Card,
   Alert,
   Badge,
+  Accordion,
+  ListGroup,
 } from "react-bootstrap";
 
 function App() {
   const time = 8;
   let correctAnswer;
   const [history, setHistory] = useState([]);
-  let correctSound = new Audio("/correct.mp3")
-  let incorrectSound = new Audio("/incorrect.mp3")
+  let correctSound = new Audio("/correct.mp3");
+  let incorrectSound = new Audio("/incorrect.mp3");
+  correctSound.volume = 0.15;
+  incorrectSound.volume = 0.15;
 
   const generateQuestion = useCallback(() => {
     const firstNumber = Math.floor(Math.random() * 9) + 1;
@@ -45,10 +49,12 @@ function App() {
 
   useEffect(() => {
     if (timeLeft === 0) {
-      new Audio("/incorrect.mp3").play()
+      let negativeFeedbackSound = new Audio("/incorrect.mp3");
+      negativeFeedbackSound.volume = 0.15;
+      negativeFeedbackSound.play();
       setQuestion(generateQuestion);
       setTimeLeft(time);
-      setPoints((points) => points - 1);
+      setPoints((points) => points - 5);
       setCorrect(false);
       setAnswer("");
     }
@@ -93,11 +99,13 @@ function App() {
     console.log(answer, correctAnswer);
     if (answer === correctAnswer) {
       setCorrect(true);
-      correctSound.play()
+      correctSound.play();
+      timeLeft >= 4 ? setPoints((points) => points + 7) : setPoints((points) => points + 5)
       console.log("yes");
     } else {
       setCorrect(false);
-      incorrectSound.play()
+      incorrectSound.play();
+      setPoints((points) => points - 4);
       console.log("no");
     }
     setAnswer("");
@@ -105,7 +113,7 @@ function App() {
     setTimeLeft(time);
   }
   return (
-    <Container className="center">
+    <Container className="pt-5">
       <Row>
         <Col>
           <h2 className="text-center">
@@ -114,7 +122,13 @@ function App() {
               {timeLeft != null ? " seconds remaining" : ""}
             </Badge>
           </h2>
-          <Alert variant={correct === true ? 'primary text-center' : `${correct != null ? 'danger' : 'primary'} text-center`}>
+          <Alert
+            variant={
+              correct === true
+                ? "primary text-center"
+                : `${correct != null ? "danger" : "primary"} text-center`
+            }
+          >
             {correct != null ? (
               <Alert.Heading>
                 {correct === true ? "Correct!" : "Incorrect"}
@@ -153,6 +167,44 @@ function App() {
             </Form>
           </Card>
         </Col>
+      </Row>
+      <Row>
+        <Accordion defaultActiveKey="0">
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>How to play</Accordion.Header>
+            <Accordion.Body>
+              <ListGroup variant="flush">
+                  <ListGroup.Item>
+                    You have 8 seconds per question
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Answering within 4 seconds will grant you 7 points.
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Anything after the first 4 seonds will grant you 5 points.
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    If you don't answer within the time limit you will lose 5 points.
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    If your answer is wrong, you will lose 4 points.
+                  </ListGroup.Item>
+              </ListGroup>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+        <Accordion defaultActiveKey="1">
+          <Accordion.Item eventKey="1">
+            <Accordion.Header>Question History</Accordion.Header>
+            <Accordion.Body>
+              <ListGroup variant="flush">
+                {history.map((item, index) => (
+                  <ListGroup.Item key={index}>{item}</ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
       </Row>
     </Container>
   );
