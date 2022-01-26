@@ -8,6 +8,7 @@ import {
   Col,
   Form,
   Button,
+  ButtonGroup,
   Card,
   Alert,
   Badge,
@@ -47,6 +48,7 @@ function App() {
   const [points, setPoints] = useState(0);
   const [answer, setAnswer] = useState("");
   const [correct, setCorrect] = useState();
+  const [numpadToggle, setNumpadToggle] = useState(false);
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -92,6 +94,14 @@ function App() {
 
   function handleAnswerChange(e) {
     setAnswer(e.target.value);
+  }
+  function handleNumpadToggle(e) {
+    e.preventDefault();
+    setNumpadToggle((prev) => !prev);
+  }
+
+  function addDigit(digit) {
+    setAnswer((prev) => prev + `${digit}`);
   }
 
   async function handleAnswerSubmit(e) {
@@ -151,7 +161,7 @@ function App() {
               <Form.Group className="mb-3" controlId="answer">
                 <Form.Control
                   size="lg"
-                  type="text"
+                  type="number"
                   placeholder="Your answer"
                   value={answer}
                   onChange={handleAnswerChange}
@@ -160,13 +170,127 @@ function App() {
                   Please input your answer above
                 </Form.Text>
               </Form.Group>
-              <Button
-                variant="primary"
-                type="submit"
-                onClick={handleAnswerSubmit}
-              >
-                Submit
-              </Button>
+              <Row>
+                {numpadToggle === true ? (
+                  <ButtonGroup
+                    vertical
+                    className="btn-group-vertical ml-4 mt-4"
+                    role="group"
+                    aria-label="Basic example"
+                  >
+                    <div>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(1)}
+                      >
+                        1
+                      </Button>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(2)}
+                      >
+                        2
+                      </Button>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(3)}
+                      >
+                        3
+                      </Button>
+                    </div>
+                    <div>
+                      <Button
+                        type="button"
+                        className="m-1 py-3 "
+                        onClick={() => addDigit(4)}
+                      >
+                        4
+                      </Button>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(5)}
+                      >
+                        5
+                      </Button>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(6)}
+                      >
+                        6
+                      </Button>
+                    </div>
+                    <div>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(7)}
+                      >
+                        7
+                      </Button>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(8)}
+                      >
+                        8
+                      </Button>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(9)}
+                      >
+                        9
+                      </Button>
+                    </div>
+                    <div>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => {
+                          setAnswer((prev) => prev.slice(0, -1));
+                        }}
+                      >
+                        &lt;
+                      </Button>
+                      <Button
+                        type="button"
+                        className="m-1 py-3"
+                        onClick={() => addDigit(0)}
+                      >
+                        0
+                      </Button>
+                    </div>
+                  </ButtonGroup>
+                ) : (
+                  ""
+                )}
+              </Row>
+              <Row>
+                <Col>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    onClick={handleAnswerSubmit}
+                  >
+                    Submit
+                  </Button>
+                </Col>
+                <Col>
+                  <Button
+                    className="ml-1"
+                    variant="primary"
+                    type="submit"
+                    onClick={handleNumpadToggle}
+                  >
+                    Numpad
+                  </Button>
+                </Col>
+              </Row>
             </Form>
           </Card>
         </Col>
@@ -203,6 +327,10 @@ function App() {
                 ))}
               </ListGroup>
             </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="2">
+            <Accordion.Header>Buttons</Accordion.Header>
+            <Accordion.Body></Accordion.Body>
           </Accordion.Item>
         </Accordion>
       </Row>
